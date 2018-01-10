@@ -18,6 +18,8 @@ class MailService:
         self.api_key = api_key
         self.api_version = api_version
         self.default_sender = default_sender
+        self.sender_name = sender_name
+        self.default_mail_type = default_mail_type
 
         self.session = requests.session()
         headers = {
@@ -30,6 +32,16 @@ class MailService:
     def base_url(self):
         return 'https://api.sendgrid.com/{}'.format(self.api_version)
 
+    def _parse_response(self, response):
+        """Do some basic errorhandling and try to parse json if any"""
+        if response.status_code == requests.codes.ok:
+            try:
+                return response.json()
+            except json.decoder.JSONDecodeError:
+                return response.text
+            else:
+                response.raise_for_status()
+
     def _get(self, path):
         url = '{}/{}'.format(self.base_url, path)
         response = self.session.get(url).json()
@@ -41,11 +53,11 @@ class MailService:
         url = '{}/{}'.format(self.base_url, path)
 
         if payload is not None:
-            response = self.session.post(
-                url, payload=json.dumps(payload)
-            ).json()
+            response = self.session.post(url, data=json.dumps(payload))
+            return self._parse_response(response)
         else:
-            response = self.session.post(url).json()
+            self.session.post(url)
+            return self._parse_response(response)
 
         return response
 
@@ -86,4 +98,5 @@ class MailService:
         if self.sender_name is not None:
             payload['personalizations'][0]['from']['name'] = self.sender_name
 
+        print(payload)
         return self._post('mail/send', payload)
