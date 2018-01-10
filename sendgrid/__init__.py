@@ -1,1 +1,3 @@
-from .session import MailService, __version__
+from .base import __version__
+from .syncservice import MailService
+from .asyncservice import AsyncMailService
