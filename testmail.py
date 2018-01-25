@@ -21,7 +21,7 @@ def sync_main():
 
 
 async def send_email(session):
-    result = await session.a_send(
+    result = await session.send(
         RECIPIENTS, SUBJECT, BODY.replace('Bodies', 'Async Bodies')
     )
     print('Email sent, result: {}'.format(result))

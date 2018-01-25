@@ -57,7 +57,7 @@ class AsyncMailService(BaseMailService):
 
         return self._parse_response(response_data)
 
-    async def a_send(self, *args, **kwargs):
+    async def send(self, *args, **kwargs):
         """Asynchronously send email"""
         payload = self._generate_send_mail_payload(*args, **kwargs)
         return await self._post('mail/send', payload)
