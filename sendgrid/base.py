@@ -73,7 +73,7 @@ class BaseMailService:
             payload['personalizations'][0]['from']['name'] = self.sender_name
 
         if files is not None:
-            patload['attachements'] = []
+            payload['attachements'] = []
             for attachement in files:
                 filename, filetype, data = attachement
                 payload['attachements'].append(
