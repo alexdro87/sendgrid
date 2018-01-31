@@ -30,8 +30,13 @@ class BaseMailService:
             'Content-Type': 'application/json'
         }
 
-    def _generate_send_mail_payload(self, recipients, subject, content, sender=None, mail_type=None):
-        """Send a single email"""
+    def _generate_send_mail_payload(self, recipients, subject, content,
+                                    sender=None, mail_type=None,
+                                    files=None):
+        """Send a single email
+        
+        :param files: Tuple of (filename, type, base64encoded data)
+        """
 
         if sender is None:
             sender = self.default_sender
@@ -66,5 +71,17 @@ class BaseMailService:
 
         if self.sender_name is not None:
             payload['personalizations'][0]['from']['name'] = self.sender_name
+
+        if files is not None:
+            patload['attachements'] = []
+            for attachement in files:
+                filename, filetype, data = attachement
+                payload['attachements'].append(
+                    {
+                        'content': data,
+                        'type': filetype,
+                        'filename': filename
+                    }
+                )
 
         return payload
