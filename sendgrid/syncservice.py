@@ -41,12 +41,10 @@ class MailService(BaseMailService):
 
         if payload is not None:
             response = self.session.post(url, data=json.dumps(payload))
-            return self._parse_response(response)
         else:
-            self.session.post(url)
-            return self._parse_response(response)
+            response = self.session.post(url)
 
-        return response
+        return self._parse_response(response)
 
     def send(self, *args, **kwargs):
         """Synchronously send email"""
