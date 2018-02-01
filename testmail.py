@@ -2,6 +2,8 @@
 
 from sendgrid import MailService, AsyncMailService
 import asyncio
+import base64
+
 
 API_KEY = (
     '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'
@@ -15,8 +17,18 @@ BODY = "I love Big Bodies"
 def sync_main():
     session = MailService(API_KEY, default_sender=DEFAULT_SENDER)
 
+    filename = 'testme.txt'
+    filetype = 'application/json'
+    content = base64.b64encode(
+        '{"hello": "world"}'.encode('utf-8')
+    ).decode('utf-8')
+
     print('Sending email...')
-    result = session.send(RECIPIENTS, SUBJECT, BODY)
+    result = session.send(RECIPIENTS, SUBJECT, BODY, files=[
+            (filename, filetype, content)
+        ]
+    )
+
     print('Email sent, result: {}'.format(result))
 
 
@@ -37,6 +49,6 @@ def async_main():
 
 
 if __name__ == '__main__':
-    # sync_main()
+    sync_main()
     print('\n\n')
-    async_main()
+    # async_main()
