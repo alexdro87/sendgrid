@@ -84,4 +84,5 @@ class BaseMailService:
                     }
                 )
 
+        print(payload)
         return payload
